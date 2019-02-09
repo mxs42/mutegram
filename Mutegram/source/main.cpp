@@ -13,7 +13,7 @@ int main()
 {
 	std::wstring currentDir;
 	currentDir.resize(MAX_PATH);
-	GetCurrentDirectory(MAX_PATH, const_cast<wchar_t*>(currentDir.data()));;
+	GetCurrentDirectory(MAX_PATH, const_cast<wchar_t*>(currentDir.data()));
 	currentDir.resize(currentDir.find_first_of(L'\0'));
 	std::wcout << "Current directory: " << currentDir << std::endl;
 
@@ -58,11 +58,6 @@ int main()
 	// PATCH BEGIN
 	// ------------------------------
 
-	// Telegram checks that its window is a foreground window. 
-	// If this is TRUE then it doesn't call FlashWindowEx flash. 
-	// So we have to force this check to be always TRUE.
-	// Not sure about signature correctness for future updates though.
-
 	// .text:00CD2B48 74 46                                                           jz      short loc_CD2B90 <- we patch this to unconditional jump
 	// .text:00CD2B4A 8B 78 64                                                        mov     edi, [eax+64h]
 	// .text:00CD2B4D 85 FF                                                           test    edi, edi
@@ -81,7 +76,7 @@ int main()
 	// .text:00CD2B83 C7 45 90 01 00 00 00                                            mov     dword ptr [ebp-70h], 1
 	// .text:00CD2B8A FF 15 70 17 B3 01                                               call    ds:FlashWindowEx
 	// .text:00CD2B90                                                 loc_CD2B90:
-	//																				  ...
+	//                                                                                ...
 
 	const auto target = SignatureScan(map, size, "74 ? 8B 78 ? 85 FF 74 ? 8B B7 ? ? ? ? FF 15 ? ? ? ?");
 	if (!target)
