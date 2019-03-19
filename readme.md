@@ -19,27 +19,11 @@ As you can see, there is no way to disable that «flashbounce» without disablin
 Now you have two options: you can either build Telegram from sources by yourself OR you can byte-patch Telegram executable to get rid of this orange thing.  
 I chose the second path because I don't really want to setup the whole build environment to compile Telegram (although it's somewhat easy, they provide step-by-step tutorial).
 ## Usage
-Just download or compile an executable, place it next to Telegram.exe (default path is `%APPDATA%/Telegram Desktop`) and run (don't forget to close Telegram before running).  
-It will backup original Telegram.exe and apply a one-byte patch. Now Telegram won't ever call `FlashWindowEx`.
+Just download or compile an executable, and place both EasyHook32.dll and winmm.dll next to Telegram.exe (default path is `%APPDATA%/Telegram Desktop`).  
+Now `FlashWindowEx` call will do nothing.
 ## Details
-Internally Telegram uses this function to flash its window on taskbar:
-```cpp
-void FlashBounce() {
-	auto window = App::wnd();
-	if (!window || GetForegroundWindow() == window->psHwnd()) {
-		return;
-	}
-
-	FLASHWINFO info;
-	info.cbSize = sizeof(info);
-	info.hwnd = window->psHwnd();
-	info.dwFlags = FLASHW_ALL;
-	info.dwTimeout = 0;
-	info.uCount = 1;
-	FlashWindowEx(&info);
-}
-```
-We just force the condition to be always true.
+It uses proxy DLL technique to inject into Telegram.exe process automatically on process startup.  
+Then it detours `FlashWindowEx` from user32.dll to make it do nothing.  
 ## License
 The MIT License
 
