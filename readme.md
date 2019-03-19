@@ -19,7 +19,7 @@ As you can see, there is no way to disable that «flashbounce» without disablin
 Now you have two options: you can either build Telegram from sources by yourself OR you can byte-patch Telegram executable to get rid of this orange thing.  
 I chose the second path because I don't really want to setup the whole build environment to compile Telegram (although it's somewhat easy, they provide step-by-step tutorial).
 ## Usage
-Just download or compile an executable, and place both EasyHook32.dll and winmm.dll next to Telegram.exe (default path is `%APPDATA%/Telegram Desktop`).  
+Just download or compile this project, and place both EasyHook32.dll and winmm.dll next to Telegram.exe (default path is `%APPDATA%/Telegram Desktop`).  
 Now `FlashWindowEx` call will do nothing.
 ## Details
 It uses proxy DLL technique to inject into Telegram.exe process automatically on process startup.  
