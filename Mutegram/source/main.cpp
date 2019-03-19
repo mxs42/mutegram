@@ -58,27 +58,11 @@ int main()
 	// PATCH BEGIN
 	// ------------------------------
 
-	// .text:00CD2B48 74 46                                                           jz      short loc_CD2B90 <- we patch this to unconditional jump
-	// .text:00CD2B4A 8B 78 64                                                        mov     edi, [eax+64h]
-	// .text:00CD2B4D 85 FF                                                           test    edi, edi
-	// .text:00CD2B4F 74 3F                                                           jz      short loc_CD2B90
-	// .text:00CD2B51 8B B7 AC 01 00 00                                               mov     esi, [edi+1ACh]
-	// .text:00CD2B57 FF 15 74 17 B3 01                                               call    ds:GetForegroundWindow
-	// .text:00CD2B5D 3B C6                                                           cmp     eax, esi
-	// .text:00CD2B5F 74 2F                                                           jz      short loc_CD2B90
-	// .text:00CD2B61 C7 45 84 14 00 00 00                                            mov     dword ptr [ebp-7Ch], 14h
-	// .text:00CD2B68 8B 87 AC 01 00 00                                               mov     eax, [edi+1ACh]
-	// .text:00CD2B6E 89 45 88                                                        mov     [ebp-78h], eax
-	// .text:00CD2B71 8D 45 84                                                        lea     eax, [ebp-7Ch]
-	// .text:00CD2B74 50                                                              push    eax
-	// .text:00CD2B75 C7 45 8C 03 00 00 00                                            mov     dword ptr [ebp-74h], 3
-	// .text:00CD2B7C C7 45 94 00 00 00 00                                            mov     dword ptr [ebp-6Ch], 0
-	// .text:00CD2B83 C7 45 90 01 00 00 00                                            mov     dword ptr [ebp-70h], 1
-	// .text:00CD2B8A FF 15 70 17 B3 01                                               call    ds:FlashWindowEx
-	// .text:00CD2B90                                                 loc_CD2B90:
-	//                                                                                ...
+	//	.text : 00D4458D FF 15 70 77 C1 01	call    ds : GetForegroundWindow
+	//	.text : 00D44593 3B C6				cmp     eax, esi
+	//	.text : 00D44595 74 3B				jz      short loc_D445D2
 
-	const auto target = SignatureScan(map, size, "74 ? 8B 78 ? 85 FF 74 ? 8B B7 ? ? ? ? FF 15 ? ? ? ?");
+	const auto target = SignatureScan(map, size, "FF 15 ? ? ? ? 3B C6 74 ?");
 	if (!target)
 	{
 		std::wcout << "[ERROR] Can't patch Telegram executable. Maybe you've already patched it or this tool doesn't support current Telegram version." << std::endl;
@@ -87,7 +71,7 @@ int main()
 	}
 
 	// replace jz with jmp
-	*reinterpret_cast<uint8_t*>(target) = 0xEB;
+	*reinterpret_cast<uint8_t*>(target + 0x8) = 0xEB;
 
 	// ------------------------------
 	// PATCH END
