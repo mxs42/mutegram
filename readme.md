@@ -1,3 +1,7 @@
+# This tool is no longer needed
+**5 years passed and we finally have an [option](https://github.com/telegramdesktop/tdesktop/commit/6f760d513ea41b8017d4abd5f88e615fd5c0a10e) to disable taskbar flash.**  
+Congratulations!
+
 # Mutegram
 A small utility to disable taskbar flashing of Telegram Desktop (**only for Windows**).
 ## The problem
